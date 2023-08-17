@@ -1,0 +1,66 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using cAlgo.API;
+using cAlgo.API.Collections;
+using cAlgo.API.Indicators;
+using cAlgo.API.Internals;
+using cAlgo.Indicators;
+
+namespace HullCloudStrategy
+{
+    [Robot(TimeZone = TimeZones.UTC, AccessRights = AccessRights.FullAccess)]
+    public class HullCloudRobot : Robot
+    {
+        [Parameter("HULL Period 10", DefaultValue = 10)]
+        public int HullPeriod10 { get; set; }
+
+        [Parameter("HULL Period 20", DefaultValue = 20)]
+        public int HullPeriod20 { get; set; }
+
+        private HullMovingAverage hull10;
+        private HullMovingAverage hull20;
+
+        protected override void OnStart()
+        {
+            hull10 = Indicators.HullMovingAverage(Bars.ClosePrices, HullPeriod10);
+            hull20 = Indicators.HullMovingAverage(Bars.ClosePrices, HullPeriod20);
+        }
+
+        protected override void OnTick()
+        {
+            double hull10LastValue = hull10.Result.Last(0);
+            double hull20LastValue = hull20.Result.Last(0);
+            double hull10SecondLastValue = hull10.Result.Last(1);
+            double hull20SecondLastValue = hull20.Result.Last(1);
+            var Position25 = Positions.Find("RenkoCloud25", SymbolName);
+            var Position50 = Positions.Find("RenkoCloud50", SymbolName);
+            
+            if (Position25 != null)
+            {
+                if (Position25.TradeType == TradeType.Buy && hull10LastValue < hull10SecondLastValue && hull20LastValue < hull20SecondLastValue)
+                {
+                    ClosePosition(Position25);
+                }
+                else if (Position25.TradeType == TradeType.Sell && hull10LastValue > hull10SecondLastValue && hull20LastValue > hull20SecondLastValue)
+                {
+                    ClosePosition(Position25);
+                }
+            }
+            
+            if (Position50 != null)
+            {
+                if (Position50.TradeType == TradeType.Buy && hull10LastValue < hull10SecondLastValue && hull20LastValue < hull20SecondLastValue)
+                {
+                    ClosePosition(Position50);
+                }
+                else if (Position50.TradeType == TradeType.Sell && hull10LastValue > hull10SecondLastValue && hull20LastValue > hull20SecondLastValue)
+                {
+                    ClosePosition(Position50);
+                }
+            }
+        }
+    }
+}
+
