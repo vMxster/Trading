@@ -34,30 +34,17 @@ namespace HullManager
             double hull20LastValue = hull20.Result.Last(0);
             double hull10SecondLastValue = hull10.Result.Last(1);
             double hull20SecondLastValue = hull20.Result.Last(1);
-            var Position25 = Positions.Find("RenkoCloud25", SymbolName);
-            var Position50 = Positions.Find("RenkoCloud50", SymbolName);
+            var Position = Positions.Find("", SymbolName);
             
-            if (Position25 != null)
+            if (Position != null)
             {
-                if (Position25.TradeType == TradeType.Buy && hull10LastValue < hull10SecondLastValue && hull20LastValue < hull20SecondLastValue)
+                if (Position.TradeType == TradeType.Buy && hull10LastValue < hull10SecondLastValue && hull20LastValue < hull20SecondLastValue)
                 {
-                    ClosePosition(Position25);
+                    ClosePosition(Position);
                 }
-                else if (Position25.TradeType == TradeType.Sell && hull10LastValue > hull10SecondLastValue && hull20LastValue > hull20SecondLastValue)
+                else if (Position.TradeType == TradeType.Sell && hull10LastValue > hull10SecondLastValue && hull20LastValue > hull20SecondLastValue)
                 {
-                    ClosePosition(Position25);
-                }
-            }
-            
-            if (Position50 != null)
-            {
-                if (Position50.TradeType == TradeType.Buy && hull10LastValue < hull10SecondLastValue && hull20LastValue < hull20SecondLastValue)
-                {
-                    ClosePosition(Position50);
-                }
-                else if (Position50.TradeType == TradeType.Sell && hull10LastValue > hull10SecondLastValue && hull20LastValue > hull20SecondLastValue)
-                {
-                    ClosePosition(Position50);
+                    ClosePosition(Position);
                 }
             }
         }
